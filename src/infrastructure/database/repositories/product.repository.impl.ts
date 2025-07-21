@@ -13,4 +13,16 @@ export class ProductRepositoryImpl implements ProductRepository {
       (p) => new Product(p.id, p.name, p.description, p.price, p.stock),
     );
   }
+  async findById(id: number): Promise<Product | null> {
+    const p = await this.prisma.product.findUnique({ where: { id } });
+    if (!p) return null;
+
+    return new Product(p.id, p.name, p.description, p.price, p.stock);
+  }
+  async updateStock(id: number, newStock: number): Promise<void> {
+    await this.prisma.product.update({
+      where: { id },
+      data: { stock: newStock },
+    });
+  }
 }
